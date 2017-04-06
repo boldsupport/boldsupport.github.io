@@ -1,3 +1,14 @@
+String.prototype.rot13 = rot13 = function(s)
+ {
+    return (s = (s) ? s : this).split('').map(function(_)
+     {
+        if (!_.match(/[A-Za-z]/)) return _;
+        c = Math.floor(_.charCodeAt(0) / 97);
+        k = (_.toLowerCase().charCodeAt(0) - 96) % 26 + 13;
+        return String.fromCharCode(k + ((c == 0) ? 64 : 96));
+     }).join('');
+ };
+
 function handleProductData(data){
 	productData = JSON.parse(data);
 }
@@ -302,9 +313,7 @@ function getCode(){
 	var frequency_type = document.getElementById('frequency_type').value;
 
 	if(!active_is_limited && !active_is_prepaid_or_limited){
-		active_code = "https://" 
-		+ myshopify_domain 
-		+ "/pages/quick-subscribe?p=" + active_product_id 
+		var parameters = "p=" + active_product_id 
 		+ "&v=" + active_variant_id 
 		+ "&g=" + active_group_id 
 		+ "&fn=" + frequency_num 
@@ -312,6 +321,9 @@ function getCode(){
 		+ "&dp=" + active_discounted_price 
 		+ "&rdp=" + active_discount_percentage 
 		+ "&rup=" + active_unformatted_discounted_price;
+		active_code = "https://" 
+		+ myshopify_domain 
+		+ "/pages/quick-subscribe?" + CryptoJS.AES.encrypt(parameters, "Recurring Orders and Subscriptions");
 	}
 	else if(active_is_prepaid_or_limited){
 
@@ -321,9 +333,7 @@ function getCode(){
 		var prepaid_checked = document.getElementById('is_prepaid_or_limited').querySelector('input').checked;
 
 		if(prepaid_checked){
-			active_code = "https://" 
-			+ myshopify_domain 
-			+ "/pages/quick-subscribe?p=" + active_product_id 
+			var parameters = "p=" + active_product_id 
 			+ "&v=" + active_variant_id 
 			+ "&g=" + active_group_id 
 			+ "&fn=" + frequency_num 
@@ -334,11 +344,12 @@ function getCode(){
 			+ "&tr=" + total_recurrences 
 			+ "&ip=1" 
 			+ "&pli=" + prepaid_length_id;
-		}
-		else{
 			active_code = "https://" 
 			+ myshopify_domain 
-			+ "/pages/quick-subscribe?p=" + active_product_id 
+			+ "/pages/quick-subscribe?" + CryptoJS.AES.encrypt(parameters, "Recurring Orders and Subscriptions");
+		}
+		else{
+			var parameters = "p=" + active_product_id 
 			+ "&v=" + active_variant_id 
 			+ "&g=" + active_group_id 
 			+ "&fn=" + frequency_num 
@@ -347,6 +358,9 @@ function getCode(){
 			+ "&rdp=" + active_discount_percentage 
 			+ "&rup=" + active_unformatted_discounted_price 
 			+ "&tr=" + total_recurrences;
+			active_code = "https://" 
+			+ myshopify_domain 
+			+ "/pages/quick-subscribe?" + CryptoJS.AES.encrypt(parameters, "Recurring Orders and Subscriptions");
 		}
 
 	}
@@ -354,10 +368,7 @@ function getCode(){
 
 		var custom_length_select = document.getElementById('sub-length-select');
 		var total_recurrences = custom_length_select.value;
-
-		active_code = "https://" 
-		+ myshopify_domain 
-		+ "/pages/quick-subscribe?p=" + active_product_id 
+		var parameters = "p=" + active_product_id 
 		+ "&v=" + active_variant_id 
 		+ "&g=" + active_group_id 
 		+ "&fn=" + frequency_num 
@@ -366,6 +377,9 @@ function getCode(){
 		+ "&rdp=" + active_discount_percentage 
 		+ "&rup=" + active_unformatted_discounted_price 
 		+ "&tr=" + total_recurrences;
+		active_code = "https://" 
+		+ myshopify_domain 
+		+ "/pages/quick-subscribe?" + CryptoJS.AES.encrypt(parameters, "Recurring Orders and Subscriptions");
 	}
 
 	active_embed_code = '<button type="button" class="ro-subscribe-btn" onclick="window.location=\'' + active_code + '\'">Subscribe Now!</button>';
